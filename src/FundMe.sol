@@ -22,9 +22,9 @@ contract FundMe {
         _;
     }
 
-    constructor(address priceFeed) {
+    constructor() {
         i_owner = msg.sender;
-        i_priceFeed = AggregatorV3Interface(priceFeed);
+        // i_priceFeed = AggregatorV3Interface(priceFeed);
     }
 
     function fund() public payable {
