@@ -27,4 +27,14 @@ contract FundMeTest is Test {
     function testPriceFeedVersionIsAccurate() public view {
         assertEq(fundMe.getVersion(), 4);
     }
+
+    function testFundFailsWithoutEnoughEth() public {
+        vm.expectRevert(); // Expect the transaction to revert
+        fundMe.fund(); // send 0 value
+    }
+
+    function testFundUpdatesFundedDataStructure() public {
+        fundMe.fund{value: 10e18};
+        
+    }
 }
