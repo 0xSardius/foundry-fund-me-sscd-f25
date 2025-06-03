@@ -56,4 +56,10 @@ contract FundMe {
     receive() external payable {
         fund();
     }
+
+    // View / Pure functions
+
+    function getAddressToAmountFunded(address fundingAddress) public view returns (uint256) {
+        return s_addressToAmountFunded[fundingAddress];
+    }
 }
