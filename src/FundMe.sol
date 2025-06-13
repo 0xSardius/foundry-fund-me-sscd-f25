@@ -10,6 +10,7 @@ error NotOwner();
 contract FundMe {
     using PriceConverter for uint256;
 
+    // Reading and writing from storage is incredibly expensive.
     mapping(address => uint256) public s_addressToAmountFunded;
     address[] public s_funders;
     AggregatorV3Interface public immutable i_priceFeed;
@@ -36,6 +37,18 @@ contract FundMe {
 
     function getVersion() public view returns (uint256) {
         return s_priceFeed.version();
+    }
+
+    // Reads from memory instead of storage
+    function cheaperWithdraw() public onlyOwner {
+        uint256 fundersLength = s_funders.length;
+        for(uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+        s_funders = new address[](0);
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
+        require(callSuccess, "Call failed");
     }
 
     function withdraw() public onlyOwner {
